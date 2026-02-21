@@ -2,7 +2,7 @@
 Author: Toshinori Kitamura
 Affiliation: NAIST & OSX
 """
-import gym
+import gymnasium as gym
 import jax
 import numpy as np
 

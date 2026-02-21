@@ -1,4 +1,4 @@
-from gym.envs.registration import register  # NOQA isort:skip
+from gymnasium.envs.registration import register  # NOQA isort:skip
 
 # Common mathmetical (jitted) functions & classes.
 from ._calc.backup_dp import calc_optimal_q  # NOQA isort:skip

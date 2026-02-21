@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod, abstractstaticmethod
 from itertools import count
 from typing import Dict, Iterator, List, Optional, Type
 
-import gym
+import gymnasium as gym
 import jax
 import numpy as np
 import structlog
@@ -145,17 +145,17 @@ class BaseSolver(ABC, History):
 
         # Reset env if necessary
         if reset:
-            if isinstance(self.env, gym.wrappers.Monitor):
-                # With Monitor, reset() cannot be called unless the episode is over.
-                if self.env.stats_recorder.steps is None:
-                    self.env.obs = self.env.reset()
-                else:
-                    done = False
-                    while not done:
-                        _, _, done, _ = self.env.step(self.env.action_space.sample())
-                    self.env.obs = self.env.reset()
-            else:
-                self.env.obs = self.env.reset()
+            # if isinstance(self.env, gym.wrappers.Monitor):
+            #     # With Monitor, reset() cannot be called unless the episode is over.
+            #     if self.env.stats_recorder.steps is None:
+            #         self.env.obs = self.env.reset()
+            #     else:
+            #         done = False
+            #         while not done:
+            #             _, _, done, _ = self.env.step(self.env.action_space.sample())
+            #         self.env.obs = self.env.reset()
+            # else:
+            self.env.obs = self.env.reset()
         else:
             assert hasattr(
                 env, "obs"

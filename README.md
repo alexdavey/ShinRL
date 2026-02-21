@@ -11,7 +11,7 @@ Try ShinRL at [experiments/QuickStart.ipynb](experiments/QuickStart.ipynb).
 ![QuickStart](assets/quickstart.png)
 
 ```python
-import gym
+import gymnasium as gym
 from shinrl import DiscreteViSolver
 import matplotlib.pyplot as plt
 

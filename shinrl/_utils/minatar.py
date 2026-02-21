@@ -4,8 +4,8 @@ Author: Toshinori Kitamura
 Affiliation: NAIST & OSX
 """
 
-import gym
-from gym.wrappers import TimeLimit
+import gymnasium as gym
+from gymnasium.wrappers import TimeLimit
 
 try:
     import minatar

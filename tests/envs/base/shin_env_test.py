@@ -1,5 +1,5 @@
 import chex
-import gym
+import gymnasium as gym
 import jax.numpy as jnp
 
 from shinrl import EnvConfig, ShinEnv

@@ -4,7 +4,7 @@ Affiliation: NAIST & OSX
 """
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import haiku as hk
 import jax
 import jax.numpy as jnp

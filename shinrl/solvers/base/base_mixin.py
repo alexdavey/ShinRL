@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import Dict, Tuple
 
 import distrax
-import gym
+import gymnasium as gym
 import jax
 from chex import Array, PRNGKey
 

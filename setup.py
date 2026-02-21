@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 install_requires = [
-    "gym>=0.20.0",
+    "gymnasium",
     "jax>=0.2.21",
     "jaxlib>=0.1.71",
     "tqdm",

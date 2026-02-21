@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-import gym
+import gymnasium as gym
 import jax
 import jax.numpy as jnp
 import numpy as np

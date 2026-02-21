@@ -5,7 +5,7 @@ Affiliation: NAIST & OSX
 from typing import Optional
 
 import distrax
-import gym
+import gymnasium as gym
 import jax
 import jax.numpy as jnp
 from chex import Array

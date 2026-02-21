@@ -5,7 +5,7 @@ Affiliation: NAIST & OSX
 from copy import deepcopy
 from typing import Optional
 
-import gym
+import gymnasium as gym
 
 import shinrl as srl
 

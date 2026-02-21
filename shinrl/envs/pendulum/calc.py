@@ -132,7 +132,7 @@ def reward(config: PendulumConfig, state: int, action: int) -> float:
     c_act = to_continuous_act(config, action)
     torque = c_act * config.torque_mag
     th, vel = state_to_th_vel(config, state)
-    # OpenAI gym reward
+    # OpenAI gym reward -- TODO: Check that this is the same in gymnasium
     normed_th = ((th + jnp.pi) % (2 * jnp.pi)) - jnp.pi
     cost = normed_th ** 2 + 0.1 * (vel ** 2) + 0.001 * (torque ** 2)
     return -cost

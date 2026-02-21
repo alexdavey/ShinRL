@@ -5,7 +5,7 @@ Affiliation: NAIST & OSX
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, Tuple
 
-import gym
+import gymnasium as gym
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -222,8 +222,7 @@ class ShinEnv(ABC, gym.Env):
         """
 
         self.key = jax.random.PRNGKey(seed)
-        self.action_space.np_random.seed(seed)
-        self.observation_space.np_random.seed(seed)
+        self.action_space.seed(seed)
 
     def step(self, action: int) -> Tuple[OBS, REW, DONE, INFO]:
         """Simulate the environment by one timestep.

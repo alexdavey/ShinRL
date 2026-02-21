@@ -8,7 +8,7 @@ import time
 from collections import defaultdict
 from typing import Callable, Dict, List, NamedTuple, Optional, Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
 from chex import Array, PRNGKey
 from cpprb import ReplayBuffer

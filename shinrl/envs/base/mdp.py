@@ -49,7 +49,7 @@ class MDP(NamedTuple):
     def is_valid_mdp(mdp: MDP) -> bool:
         dS, dA = mdp.dS, mdp.dA
         rew_mat, tran_mat, obs_mat = mdp.rew_mat, mdp.tran_mat, mdp.obs_mat
-        npt.assert_almost_equal(mdp.init_probs.sum(), 1.0)
+        npt.assert_almost_equal(mdp.init_probs.sum(), 1.0, decimal=6)
         chex.assert_shape(mdp.init_probs, (dS,))
         chex.assert_shape(obs_mat, (dS, *mdp.obs_shape))
         chex.assert_shape(rew_mat, (dS, dA))

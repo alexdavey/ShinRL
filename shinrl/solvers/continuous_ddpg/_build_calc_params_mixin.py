@@ -5,7 +5,7 @@ Affiliation: NAIST & OSX
 from typing import Optional
 
 import chex
-import gym
+import gymnasium as gym
 import haiku as hk
 import jax
 from chex import Array

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import List, Type
 
-import gym
+import gymnasium as gym
 
 import shinrl as srl
 

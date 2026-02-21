@@ -4,7 +4,7 @@ Affiliation: NAIST & OSX
 """
 from typing import Any, Optional
 
-import gym
+import gymnasium as gym
 import jax.numpy as jnp
 import numpy as np
 from chex import Array

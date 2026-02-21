@@ -4,7 +4,7 @@ Affiliation: NAIST & OSX
 """
 from typing import Callable, Optional
 
-import gym
+import gymnasium as gym
 
 import shinrl as srl
 
