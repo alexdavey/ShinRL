@@ -17,7 +17,7 @@ import shinrl as srl
 from .config import EnvConfig
 from .mdp import MDP
 
-OBS, REW, DONE, INFO = Array, float, bool, Dict[str, Any]
+OBS, REW, DONE, TRUNC, INFO = Array, float, bool, bool, Dict[str, Any]
 
 
 class ShinEnv(ABC, gym.Env):
@@ -224,7 +224,7 @@ class ShinEnv(ABC, gym.Env):
         self.key = jax.random.PRNGKey(seed)
         self.action_space.seed(seed)
 
-    def step(self, action: int) -> Tuple[OBS, REW, DONE, INFO]:
+    def step(self, action: int) -> Tuple[OBS, REW, DONE, TRUNC, INFO]:
         """Simulate the environment by one timestep.
 
         Args:
@@ -250,10 +250,10 @@ class ShinEnv(ABC, gym.Env):
             done = True
         else:
             info["TimeLimit.truncated"] = False
-        trans = (next_obs, reward, done, info)
+        trans = (next_obs, reward, done, False, info)
         return trans
 
-    def reset(self) -> OBS:
+    def reset(self, seed=None, options={}) -> tuple[OBS, INFO]:
         """Resets the state of the environment and returns an initial observation.
 
         Returns:
@@ -263,7 +263,7 @@ class ShinEnv(ABC, gym.Env):
         self.elapsed_steps = 0
         self.key, init_state, init_obs = self._reset(self.key)
         self._state = init_state.item()
-        return init_obs
+        return init_obs, {}
 
     def render(self) -> None:
         pass

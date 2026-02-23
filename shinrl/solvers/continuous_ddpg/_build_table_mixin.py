@@ -23,9 +23,9 @@ class BuildTableMixIn:
         self.data["EvaluatePolicy"] = jnp.ones((self.dS, self.dA)) / self.dA
 
         # build pred_all functions
-        obs = self.env.mdp.obs_mat  # dS x obs_shape
+        obs = self.env.unwrapped.mdp.obs_mat  # dS x obs_shape
         self._sa_obs_mat = jnp.repeat(obs, self.dA, axis=0)  # (dSxdA) x obs_shape
-        act = self.env.mdp.act_mat  # dA x act_shape
+        act = self.env.unwrapped.mdp.act_mat  # dA x act_shape
         self._sa_act_mat = jnp.tile(act, (self.dS, 1))  # (dSxdA) x act_shape
         self.pred_all_q, self.pred_all_mean = self._build_pred_all()
         self.update_tb_data()

@@ -37,7 +37,7 @@ def tb_act(key, state, policy):
 def test_collect_samples_shin():
     key = jax.random.PRNGKey(0)
     env = srl.Pendulum()
-    env.obs = env.reset()
+    env.obs, _ = env.reset()
     pol = jax.random.uniform(key, shape=(env.mdp.dS, env.mdp.dA))
     pol /= pol.sum(axis=1, keepdims=True)
 
@@ -64,7 +64,7 @@ def test_collect_samples_shin():
 def test_collect_samples_gym():
     key = jax.random.PRNGKey(0)
     env = gym.make("CartPole-v0")
-    env.obs = env.reset()
+    env.obs, _ = env.reset()
 
     @jax.jit
     def act_fn(key, obs):

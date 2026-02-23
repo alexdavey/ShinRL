@@ -35,4 +35,4 @@ def test_q():
     q = env.calc_optimal_q()
     pol = distrax.Greedy(q).probs
     assert q.max() > -50
-    assert env.calc_return(pol) > -50
+    assert env.unwrapped.calc_return(pol) > -50

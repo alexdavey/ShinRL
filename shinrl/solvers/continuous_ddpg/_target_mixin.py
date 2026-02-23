@@ -41,8 +41,8 @@ class QTargetMixIn(TargetMixIn):
         return srl.expected_backup_dp(
             q,
             policy,
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 

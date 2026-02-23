@@ -54,7 +54,9 @@ def test_reset_step():
     env.reset()
     for _ in range(config.horizon - 1):
         a = env.action_space.sample()
-        obs, rew, done, info = env.step(a)
+        obs, rew, done, trunc, info = env.step(a)
+        assert not trunc
         assert not done
-    obs, rew, done, info = env.step(a)
+    obs, rew, done, trunc, info = env.step(a)
+    assert not trunc
     assert info["TimeLimit.truncated"]

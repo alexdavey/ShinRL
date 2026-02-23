@@ -24,11 +24,11 @@ class MinAtarEnv(gym.Env):
 
     def reset(self):
         self.env.reset()
-        return self.env.state()
+        return self.env.state(), {}
 
     def step(self, action):
         r, terminal = self.env.act(action)
-        return self.env.state(), r, terminal, {}
+        return self.env.state(), r, False, terminal, {}
 
     def render(self):
         self.env.display_state(10)

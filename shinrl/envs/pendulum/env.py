@@ -64,8 +64,8 @@ class Pendulum(ShinEnv):
             space = gym.spaces.Discrete(self.config.dA)
         elif self.config.act_mode == PendulumConfig.ACT_MODE.continuous:
             space = gym.spaces.Box(
-                low=np.array((-1.0,)),
-                high=np.array((1.0,)),
+                low=-1.0,
+                high=1.0,
                 dtype=float,
             )
         return space

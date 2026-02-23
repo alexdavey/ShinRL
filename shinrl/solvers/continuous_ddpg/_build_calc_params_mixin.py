@@ -26,7 +26,7 @@ class BuildCalcParamsDpMixIn:
         q_loss_fn = getattr(srl, self.config.q_loss_fn.name)
 
         def calc_pol_loss(pol_prm: hk.Params, q_prm: hk.Params):
-            obs = self.env.mdp.obs_mat
+            obs = self.env.unwrapped.mdp.obs_mat
             mean = self.pol_net.apply(pol_prm, obs)  # dS x act_shape
             pred = self.q_net.apply(q_prm, obs, mean)
             return -pred.mean()

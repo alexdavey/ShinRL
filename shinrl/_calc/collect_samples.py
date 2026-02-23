@@ -51,11 +51,12 @@ def act_and_step(
 
     obs = env.obs
     if is_shin_env:
-        state = env.get_state()
+        state = env.unwrapped.get_state()
     act_fn_input = state if use_state and is_shin_env else obs
     new_key, act, log_prob = act_fn(key, act_fn_input)
     act = np.asarray(act)
-    next_obs, rew, done, info = env.step(act)
+    next_obs, rew, done, trunc, info = env.step(act)
+    assert not trunc, "Truncation not yet supported in this gymnasium port."
     env.obs = next_obs
     timeout = info["TimeLimit.truncated"] if "TimeLimit.truncated" in info else False
     sample = {
@@ -69,7 +70,7 @@ def act_and_step(
     }
     if is_shin_env:
         sample["state"] = state
-        sample["next_state"] = env.get_state()
+        sample["next_state"] = env.unwrapped.get_state()
     return new_key, sample
 
 
@@ -118,7 +119,7 @@ def collect_samples(
             buffer.add(**sample)
         step_count += 1
         if sample["done"]:
-            env.obs = env.reset()
+            env.obs, _ = env.reset()
             done_count += 1
             if buffer is not None:
                 buffer.on_episode_end()

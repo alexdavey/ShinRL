@@ -33,7 +33,7 @@ class BuildCalcParamsDpMixIn:
         def calc_params(data: srl.DataDict) -> Array:
             q_targ = self.target_deep_dp(data)
             q_prm, opt_state = data["QNetParams"], data["QOptState"]
-            mdp = self.env.mdp
+            mdp = self.env.unwrapped.mdp
             loss, grad = jax.value_and_grad(calc_loss)(q_prm, q_targ, mdp.obs_mat)
             updates, opt_state = self.q_opt.update(grad, opt_state, q_prm)
             q_prm = optax.apply_updates(q_prm, updates)

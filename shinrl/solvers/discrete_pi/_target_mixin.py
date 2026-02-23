@@ -54,8 +54,8 @@ class QTargetMixIn(TargetMixIn):
         return srl.expected_backup_dp(
             q,
             policy,
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 
@@ -72,15 +72,15 @@ class QTargetMixIn(TargetMixIn):
         )
 
     def target_q_deep_dp(self, data: srl.DataDict) -> Array:
-        obs = self.env.mdp.obs_mat
+        obs = self.env.unwrapped.mdp.obs_mat
         q = self.q_net.apply(data["QNetTargParams"], obs)
         log_policy = self.log_pol_net.apply(data["LogPolNetParams"], obs)
         policy = jax.nn.softmax(log_policy)
         return srl.expected_backup_dp(
             q,
             policy,
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 
@@ -117,8 +117,8 @@ class SoftQTargetMixIn(TargetMixIn):
             q,
             policy,
             log_policy,
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
             self.config.er_coef,
         )
@@ -138,7 +138,7 @@ class SoftQTargetMixIn(TargetMixIn):
         )
 
     def target_q_deep_dp(self, data: srl.DataDict) -> Array:
-        obs = self.env.mdp.obs_mat
+        obs = self.env.unwrapped.mdp.obs_mat
         q = self.q_net.apply(data["QNetTargParams"], obs)
         log_policy = self.log_pol_net.apply(data["LogPolNetParams"], obs)
         policy = jax.nn.softmax(log_policy)
@@ -146,8 +146,8 @@ class SoftQTargetMixIn(TargetMixIn):
             q,
             policy,
             log_policy,
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
             self.config.er_coef,
         )

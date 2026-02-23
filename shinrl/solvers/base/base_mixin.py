@@ -36,7 +36,8 @@ class BaseGymEvalMixIn:
                 done = False
                 while not done:
                     act = self.eval_env.action_space.sample()
-                    _, _, done, _ = self.eval_env.step(act)
+                    _, _, done, term, _ = self.eval_env.step(act)
+                    assert not term, "Truncation not yet supported in this gymnasium port."
                 self.eval_env.obs = self.eval_env.reset()
         else:
             self.eval_env.obs = self.eval_env.reset()
@@ -137,7 +138,7 @@ class BaseShinEvalMixIn:
         assert self.is_shin_env
         assert "EvaluatePolicy" in self.data, "EvaluatePolicy is not set."
         pol = self.data["EvaluatePolicy"]
-        ret = self.env.calc_return(pol)
+        ret = self.env.unwrapped.calc_return(pol)
         return {"Return": ret}
 
 

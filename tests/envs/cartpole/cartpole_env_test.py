@@ -39,7 +39,7 @@ def test_q():
     pol = jnp.ones((env.mdp.dS, env.mdp.dA)) / env.mdp.dA
     ret = env.calc_return(pol)
     assert ret < 30
-    q = env.calc_optimal_q()
+    q = env.unwrapped.calc_optimal_q()
     pol = distrax.Greedy(q).probs
     assert q.max() > 80
-    assert env.calc_return(pol) > 199
+    assert env.unwrapped.calc_return(pol) > 199

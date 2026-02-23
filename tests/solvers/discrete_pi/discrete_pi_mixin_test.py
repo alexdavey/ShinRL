@@ -50,7 +50,7 @@ def test_build_net_mixin():
     solver = MockSolver.factory(env, config, mixins)
     obs = jnp.expand_dims(env.observation_space.sample(), axis=0)
     output = solver.q_net.apply(solver.data["QNetParams"], obs)
-    chex.assert_shape(output, (1, env.dA))
+    chex.assert_shape(output, (1, env.unwrapped.dA))
 
 
 def test_target_mixin():
@@ -74,7 +74,7 @@ def test_target_mixin():
     mixins = MockSolver.make_mixins()
     solver = MockSolver.factory(env, config, mixins)
     q_targ = solver.target_q_tabular_dp(solver.data)
-    chex.assert_shape(q_targ, (env.dS, env.dA))
+    chex.assert_shape(q_targ, (env.unwrapped.dS, env.unwrapped.dA))
 
 
 def test_net_act_mixin():

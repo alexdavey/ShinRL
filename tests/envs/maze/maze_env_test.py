@@ -28,8 +28,8 @@ def test_step_reset(setUp):
 def test_q(setUp):
     maze, config = setUp
     env = Maze(maze, config)
-    pol = jnp.ones((env.mdp.dS, env.mdp.dA)) / env.mdp.dA
-    ret = env.calc_return(pol)
+    pol = jnp.ones((env.unwrapped.mdp.dS, env.unwrapped.mdp.dA)) / env.unwrapped.mdp.dA
+    ret = env.unwrapped.calc_return(pol)
     assert ret < 3
     q = env.calc_optimal_q()
     pol = distrax.Greedy(q).probs

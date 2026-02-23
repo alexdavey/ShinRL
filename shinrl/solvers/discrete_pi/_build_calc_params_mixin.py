@@ -34,7 +34,7 @@ class BuildCalcParamsDpMixIn:
             return self.pol_loss_fn(logits, targ_logits)
 
         def calc_params(data: srl.DataDict) -> Array:
-            obs = self.env.mdp.obs_mat
+            obs = self.env.unwrapped.mdp.obs_mat
             q_prm, pol_prm = data["QNetParams"], data["LogPolNetParams"]
             q_opt_st, pol_opt_st = data["QOptState"], data["LogPolOptState"]
 

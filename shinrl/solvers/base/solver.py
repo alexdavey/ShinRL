@@ -136,26 +136,20 @@ class BaseSolver(ABC, History):
 
         # Check discount factor
         if self.is_shin_env:
-            if self.config.discount != env.config.discount:
+            if self.config.discount != env.unwrapped.config.discount:
                 self.logger.warning(
-                    f"env.config.discount != solver.config.discount ({env.config.discount} != {self.config.discount}). \
+                    f"env.config.discount != solver.config.discount ({env.unwrapped.config.discount} != {self.config.discount}). \
                     This may cause an unexpected behavior."
                 )
-            self.dS, self.dA, self.horizon = env.dS, env.dA, env.config.horizon
+            self.dS, self.dA, self.horizon = (
+                env.unwrapped.dS,
+                env.unwrapped.dA,
+                env.unwrapped.config.horizon,
+            )
 
         # Reset env if necessary
         if reset:
-            # if isinstance(self.env, gym.wrappers.Monitor):
-            #     # With Monitor, reset() cannot be called unless the episode is over.
-            #     if self.env.stats_recorder.steps is None:
-            #         self.env.obs = self.env.reset()
-            #     else:
-            #         done = False
-            #         while not done:
-            #             _, _, done, _ = self.env.step(self.env.action_space.sample())
-            #         self.env.obs = self.env.reset()
-            # else:
-            self.env.obs = self.env.reset()
+            self.env.obs, _ = self.env.reset()
         else:
             assert hasattr(
                 env, "obs"

@@ -27,8 +27,8 @@ class QTargetMixIn(TargetMixIn):
     def target_tabular_dp(self, data: srl.DataDict) -> Array:
         return srl.optimal_backup_dp(
             data["Q"],
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 
@@ -42,9 +42,9 @@ class QTargetMixIn(TargetMixIn):
 
     def target_deep_dp(self, data: srl.DataDict) -> Array:
         return srl.optimal_backup_dp(
-            self.q_net.apply(data["QNetTargParams"], self.env.mdp.obs_mat),
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.q_net.apply(data["QNetTargParams"], self.env.unwrapped.mdp.obs_mat),
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 
@@ -64,10 +64,10 @@ class DoubleQTargetMixIn(TargetMixIn):
 
     def target_deep_dp(self, data: srl.DataDict) -> Array:
         return srl.double_backup_dp(
-            self.q_net.apply(data["QNetTargParams"], self.env.mdp.obs_mat),
-            self.q_net.apply(data["QNetParams"], self.env.mdp.obs_mat),
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.q_net.apply(data["QNetTargParams"], self.env.unwrapped.mdp.obs_mat),
+            self.q_net.apply(data["QNetParams"], self.env.unwrapped.mdp.obs_mat),
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
         )
 
@@ -89,8 +89,8 @@ class MunchausenTargetMixIn(TargetMixIn):
     def target_tabular_dp(self, data: srl.DataDict) -> Array:
         return srl.munchausen_backup_dp(
             data["Q"],
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
             self.config.kl_coef,
             self.config.er_coef,
@@ -112,9 +112,9 @@ class MunchausenTargetMixIn(TargetMixIn):
 
     def target_deep_dp(self, data: srl.DataDict) -> Array:
         return srl.munchausen_backup_dp(
-            self.q_net.apply(data["QNetTargParams"], self.env.mdp.obs_mat),
-            self.env.mdp.rew_mat,
-            self.env.mdp.tran_mat,
+            self.q_net.apply(data["QNetTargParams"], self.env.unwrapped.mdp.obs_mat),
+            self.env.unwrapped.mdp.rew_mat,
+            self.env.unwrapped.mdp.tran_mat,
             self.config.discount,
             self.config.kl_coef,
             self.config.er_coef,

@@ -46,7 +46,7 @@ class BuildTableMixIn:
         self.data["EvaluatePolicy"] = q_to_pol[config.evaluate.name]()
 
     def _build_pred_all(self):
-        pred_all = lambda params: self.q_net.apply(params, self.env.mdp.obs_mat)
+        pred_all = lambda params: self.q_net.apply(params, self.env.unwrapped.mdp.obs_mat)
         return jax.jit(pred_all)
 
 
