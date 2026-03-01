@@ -74,6 +74,7 @@ class BaseSolver(ABC, History):
         return solver
 
     def __init__(self) -> None:
+        self.ep_seed = None
         self.env_id: int = -1
         self.solver_id: str = f"{type(self).__name__}-{next(self._id)}"
         self.logger = structlog.get_logger(solver_id=self.solver_id, env_id=None)
@@ -96,8 +97,7 @@ class BaseSolver(ABC, History):
 
         self.init_history()
         self.set_config(config)
-        self.set_env(env)
-        self.seed(self.config.seed)
+        self.set_env(env, seed=self.config.seed)
         self.is_initialized = True
         if self.config.verbose:
             self.logger.info(
@@ -106,9 +106,15 @@ class BaseSolver(ABC, History):
 
     def seed(self, seed: int = 0) -> None:
         self.key = jax.random.PRNGKey(seed)
-        self.env.seed(seed)
         random.seed(seed)
         np.random.seed(seed)
+
+        # Seed either the env or episode seed
+        if hasattr(self.env.unwrapped, "seed"):
+            self.env.unwrapped.seed(seed)
+            self.ep_seed = None
+        else:
+            self.ep_seed = seed
 
     @property
     def is_shin_env(self) -> bool:
@@ -117,10 +123,11 @@ class BaseSolver(ABC, History):
         else:
             return isinstance(self.env, ShinEnv)
 
-    def set_env(self, env: gym.Env, reset: bool = True) -> None:
+    def set_env(self, env: gym.Env, seed=None, reset: bool = True) -> None:
         """Set the environment to self.env.
         Args:
             env (gym.Env): Environment to solve.
+            seed (int): env seed to set
             reset (bool): Reset the env if True
         """
 
@@ -147,9 +154,18 @@ class BaseSolver(ABC, History):
                 env.unwrapped.config.horizon,
             )
 
+        if seed is not None:
+            self.seed(seed)
+
         # Reset env if necessary
         if reset:
-            self.env.obs, _ = self.env.reset()
+            if self.ep_seed is None:
+                obs, _ = self.env.reset()
+            else:
+                obs, _ = self.env.reset(seed=self.ep_seed)
+                self.ep_seed += 1
+
+            self.env.obs = obs
         else:
             assert hasattr(
                 env, "obs"

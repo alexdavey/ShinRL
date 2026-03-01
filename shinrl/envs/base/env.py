@@ -268,32 +268,35 @@ class ShinEnv(ABC, gym.Env):
     def render(self) -> None:
         pass
 
-    def calc_return(self, policy: Array) -> float:
+    def calc_return(self, policy: Array, er_coef: Optional[float] = None) -> float:
         ret = srl.calc_return(
             policy,
             self.mdp.rew_mat,
             self.mdp.tran_mat,
             self.mdp.init_probs,
             self.config.horizon,
+            er_coef,
         )
         return ret.item()
 
-    def calc_optimal_q(self) -> Array:
+    def calc_optimal_q(self, er_coef: Optional[float] = None) -> Array:
         q = srl.calc_optimal_q(
             self.mdp.rew_mat,
             self.mdp.tran_mat,
             self.config.discount,
             self.config.horizon,
+            er_coef,
         )
         return q
 
-    def calc_q(self, policy: Array) -> Array:
+    def calc_q(self, policy: Array, er_coef: Optional[float] = None) -> Array:
         q = srl.calc_q(
             policy,
             self.mdp.rew_mat,
             self.mdp.tran_mat,
             self.config.discount,
             self.config.horizon,
+            er_coef,
         )
         return q
 

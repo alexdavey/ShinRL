@@ -38,6 +38,31 @@ def optimal_backup_dp(
     q = rew_mat + discount * sp_mul(tran_mat, v, (dS * dA, dS)).reshape(dS, dA)
     return q
 
+@jax.jit
+def soft_optimal_backup_dp(
+    q: Array,
+    rew_mat: Array,
+    tran_mat: SparseMat,
+    discount: float,
+    er_coef: float,
+) -> Array:
+    """Do soft optimal bellman-backup :math:`r + \gamma P \max_{\pi} (\pi, q - \tau * \log{\pi})`.
+
+    Args:
+        q (Array): dS x dA q-value table.
+        rew_mat (Array): dS x dA reward table.
+        tran_mat ((dSxdA) x dS SparseMat): Transition matrix.
+        discount (float): Discount factor.
+        er_coef (float): Entropy coefficient.
+
+    Returns:
+        q (Array): dS x dA q-value table.
+    """
+    chex.assert_rank([q, rew_mat], 2)
+    dS, dA = q.shape
+    v = er_coef * jax.nn.logsumexp(q / er_coef, axis=-1, keepdims=True)  # S x 1
+    q = rew_mat + discount * sp_mul(tran_mat, v, (dS * dA, dS)).reshape(dS, dA)
+    return q
 
 @jax.jit
 def expected_backup_dp(
@@ -162,7 +187,13 @@ def munchausen_backup_dp(
 
 @functools.partial(jax.jit, static_argnames=("horizon",))
 def calc_q(
-    pol: Array, rew_mat: Array, tran_mat: SparseMat, discount: float, horizon: int
+    pol: Array,
+    rew_mat: Array,
+    tran_mat: SparseMat,
+    discount: float,
+    horizon: int,
+    er_coef: Optional[float] = None,
+    eps: float = 1e-8,
 ) -> Array:
     """Compute the oracle q table of a policy.
 
@@ -172,19 +203,31 @@ def calc_q(
         tran_mat ((dSxdA) x dS SparseMat): Transition matrix.
         discount (float): Discount factor.
         horizon (int): Environment's horizon.
+        er_coef (float | None): Entropy regularization coefficient.
 
     Returns:
         q (Array): dS x dA q-value table.
     """
     q = jnp.zeros_like(pol, dtype=float)
-    body_fun = lambda i, _q: expected_backup_dp(_q, pol, rew_mat, tran_mat, discount)
+
+    if er_coef is None:
+        body_fun = lambda i, _q: expected_backup_dp(_q, pol, rew_mat, tran_mat, discount)
+    else:
+        log_pol = jnp.log(pol + eps)
+        body_fun = lambda i, _q: soft_expected_backup_dp(_q, pol, log_pol, rew_mat, tran_mat, discount, er_coef)
+
     q = jax.lax.fori_loop(0, horizon, body_fun, q)
     return q
 
 
 @functools.partial(jax.jit, static_argnames=("horizon",))
 def calc_return(
-    pol: Array, rew_mat: Array, tran_mat: SparseMat, init_probs: Array, horizon: int
+        pol: Array,
+        rew_mat: Array,
+        tran_mat: SparseMat,
+        init_probs: Array,
+        horizon: int,
+        er_coef: Optional[float] = None
 ) -> Array:
     """Compute undiscounted return of a policy.
 
@@ -198,7 +241,7 @@ def calc_return(
     Returns:
         ret (float)
     """
-    q = calc_q(pol, rew_mat, tran_mat, 1.0, horizon)
+    q = calc_q(pol, rew_mat, tran_mat, 1.0, horizon, er_coef)
     v = jnp.sum(pol * q, axis=-1)  # S
     ret = jnp.sum(init_probs * v)
     return ret
@@ -206,7 +249,11 @@ def calc_return(
 
 @functools.partial(jax.jit, static_argnames=("horizon",))
 def calc_optimal_q(
-    rew_mat: Array, tran_mat: SparseMat, discount: float, horizon: int
+        rew_mat: Array,
+        tran_mat: SparseMat,
+        discount: float,
+        horizon: int,
+        er_coef: Optional[float] = None
 ) -> Array:
     """Compute the optimal q table.
 
@@ -220,7 +267,12 @@ def calc_optimal_q(
         q (Array): dS x dA q-value table.
     """
     q = jnp.zeros_like(rew_mat, dtype=float)
-    body_fun = lambda i, _q: optimal_backup_dp(_q, rew_mat, tran_mat, discount)
+
+    if er_coef is None:
+        body_fun = lambda i, _q: optimal_backup_dp(_q, rew_mat, tran_mat, discount)
+    else:
+        body_fun = lambda i, _q: soft_optimal_backup_dp(_q, rew_mat, tran_mat, discount, er_coef)
+
     q = jax.lax.fori_loop(0, horizon, body_fun, q)
     return q
 
