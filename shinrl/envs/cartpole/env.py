@@ -45,7 +45,7 @@ class CartPole(ShinEnv):
 
     @property
     def observation_space(self) -> gym.spaces.Space:
-        high = jnp.array(
+        high = np.array(
             [
                 self.config.x_max,
                 self.config.x_dot_max,
